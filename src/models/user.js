@@ -28,8 +28,18 @@ userSchema.statics.findByLogin = async function (login) {
             email: login, 
         })
     }
-    return user ? user : null;
+    return user 
 }
+
+userSchema.pre('save', function (next) {
+    const user = this;
+    if (user.isModified('username'))
+    {
+        throw Error('YOU CANNOT CHANGE YOUR USERNAME')
+        // encrpyt the password string 
+    }
+    next(); 
+})
 
 const User = mongoose.model("User", userSchema); 
 
