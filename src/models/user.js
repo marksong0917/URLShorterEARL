@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema(
             unique: true,
             required: true, 
         },
+        username: {
+            type: String, 
+            unique: true,
+        },
     },
     {
         timestamps: true,
@@ -16,8 +20,15 @@ const userSchema = new mongoose.Schema(
     }
 )
 
-userSchema.statics.findByEmail = async function (email) {
-    let user = await this.findOne({email})
+userSchema.statics.findByLogin = async function (login) {
+    let user = await this.findOne({ username: login, })
+    
+    if (!user) {
+        user = await this.findOne({
+            email: login, 
+        })
+    }
+    return user ? user : null;
 }
 
 const User = mongoose.model("User", userSchema); 
